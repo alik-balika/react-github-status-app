@@ -1,10 +1,30 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Container, Grid, Paper, Typography } from "@mui/material";
+import axios from "axios";
+
 import StatusCell from "./StatusCell";
 
 const PageContent = () => {
+  const [components, setComponents] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get("https://www.githubstatus.com/api/v2/components.json")
+      .then((response) => {
+        setComponents(
+          response.data.components.filter(
+            (component) =>
+              component.name !==
+              "Visit www.githubstatus.com for more information"
+          )
+        );
+      })
+      .catch((error) => {
+        console.error("Error fetching GitHub status:", error);
+      });
+  }, []);
+
   return (
-    // TODO LOSE THE MX: 32, use a min/max width maybe?
     <Container
       sx={{
         mb: 4,
@@ -19,36 +39,11 @@ const PageContent = () => {
           borderLeft="1px solid #e1e4e8"
           borderTop="1px solid #e1e4e8"
         >
-          <Grid item xs={12} md={6}>
-            <StatusCell />
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <StatusCell />
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <StatusCell />
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <StatusCell />
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <StatusCell />
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <StatusCell />
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <StatusCell />
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <StatusCell />
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <StatusCell />
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <StatusCell />
-          </Grid>
+          {components.map((component) => (
+            <Grid item xs={12} md={6} key={component.id}>
+              <StatusCell name={component.name} status={component.status} />
+            </Grid>
+          ))}
         </Grid>
       </Paper>
     </Container>
