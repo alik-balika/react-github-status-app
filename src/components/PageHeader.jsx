@@ -25,7 +25,7 @@ const PageHeader = () => {
 
   return (
     <div>
-      <AppBar position="static" sx={{ backgroundColor: "white" }}>
+      <AppBar position="static" sx={{ backgroundColor: "white", p: 0.5 }}>
         <Toolbar>
           <GitHubIcon fontSize="large" sx={{ mr: 1, color: "black" }} />
           <Typography variant="h4" color="black">
