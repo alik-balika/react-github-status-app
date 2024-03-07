@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { Container, Grid, Paper, Typography } from "@mui/material";
+import { Box, Button, Container, Grid, Paper, Typography } from "@mui/material";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import StatusCell from "./StatusCell";
 
 const PageContent = () => {
   const [components, setComponents] = useState([]);
 
-  useEffect(() => {
+  const fetchGithubStatus = () => {
     axios
       .get("https://www.githubstatus.com/api/v2/components.json")
       .then((response) => {
@@ -22,7 +24,16 @@ const PageContent = () => {
       .catch((error) => {
         console.error("Error fetching GitHub status:", error);
       });
+  };
+
+  useEffect(() => {
+    fetchGithubStatus();
   }, []);
+
+  const getMostRecentStatus = () => {
+    fetchGithubStatus();
+    toast("Status Up to Date.");
+  };
 
   return (
     <Container
@@ -30,7 +41,10 @@ const PageContent = () => {
         mb: 4,
       }}
     >
-      <Typography variant="h4">Current status</Typography>
+      <Box display="flex" justifyContent="space-between">
+        <Typography variant="h4">Current status</Typography>
+        <Button onClick={getMostRecentStatus}>Get Status</Button>
+      </Box>
 
       <Paper elevation={2}>
         <Grid
@@ -46,6 +60,7 @@ const PageContent = () => {
           ))}
         </Grid>
       </Paper>
+      <ToastContainer />
     </Container>
   );
 };
